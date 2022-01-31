@@ -5,8 +5,8 @@ namespace App\Entity;
 use App\Repository\CharacterrRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CharacterrRepository::class)]
-class Characterr
+#[ORM\Entity(repositoryClass: CharacterRepository::class)]
+class Character
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,7 +17,7 @@ class Characterr
     private $name = "Celeborn";
 
     #[ORM\Column(type: 'string', length: 64)]
-private $surname = "Arbre d'argent";
+    private $surname = "Arbre d'argent";
 
     #[ORM\Column(type: 'string', length: 16, nullable: true)]
     private $caste = "Archer";
@@ -121,5 +121,8 @@ private $surname = "Arbre d'argent";
         $this->image = $image;
 
         return $this;
+    }
+    public function display(){
+        return get_object_vars($this);
     }
 }

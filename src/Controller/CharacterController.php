@@ -20,6 +20,8 @@ class CharacterController extends AbstractController
     /**
     * @Route("/character/display", name="character_display") 
     */
+
+    #[Route('/character/display', name: 'character_display')]
     public function display()
     {
         $character = new Character();
