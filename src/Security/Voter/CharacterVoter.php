@@ -11,9 +11,11 @@ use Prophecy\Argument\Token\TokenInterface as TokenTokenInterface;
 class CharacterVoter extends Voter
 {
     public const CHARACTER_DISPLAY = 'characterDisplay';
+    public const CHARACTER_CREATE = 'characterCreate';
 
     private const ATTRIBUTES = array(
         self::CHARACTER_DISPLAY,
+        self::CHARACTER_CREATE,
     );
     protected function supports ($attribute, $subject){
         if (null !== $subject) {
@@ -29,6 +31,11 @@ class CharacterVoter extends Voter
                 //Peut envoyer $token et $subject pour tester des conditions
                 return $this->canDisplay();
                 break;
+            case self::CHARACTER_CREATE:
+                //Peut envoyer $token et $subject pour tester des conditions
+                return $this->canCreate();
+                break;
+
         }
         throw new LogicException('Invalid attribute: ' . $attribute);
     }
@@ -36,6 +43,9 @@ class CharacterVoter extends Voter
      * Checks if is allow to display
      */
     private function canDisplay(){
+        return true;
+    }
+    private function canCreate(){
         return true;
     }
 }
