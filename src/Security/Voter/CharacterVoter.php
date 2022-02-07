@@ -12,10 +12,12 @@ class CharacterVoter extends Voter
 {
     public const CHARACTER_DISPLAY = 'characterDisplay';
     public const CHARACTER_CREATE = 'characterCreate';
+    public const CHARACTER_INDEX = 'characterIndex';
 
     private const ATTRIBUTES = array(
         self::CHARACTER_DISPLAY,
         self::CHARACTER_CREATE,
+        self::CHARACTER_INDEX,
     );
     protected function supports ($attribute, $subject){
         if (null !== $subject) {
@@ -24,7 +26,7 @@ class CharacterVoter extends Voter
         return in_array($attribute, self::ATTRIBUTES);
     }
 
-    public function voteOnAttributs($attribute, $subject,TokenTokenInterface $token){
+    public function voteOnAttribute($attribute, $subject,TokenTokenInterface $token){
         //Defines acces rights
         switch($attribute){
             case self::CHARACTER_DISPLAY:
@@ -34,6 +36,10 @@ class CharacterVoter extends Voter
             case self::CHARACTER_CREATE:
                 //Peut envoyer $token et $subject pour tester des conditions
                 return $this->canCreate();
+                break;
+            case self::CHARACTER_INDEX:
+                //Peut envoyer $token et $subject pour tester des conditions
+                return $this->canDisplay();
                 break;
 
         }

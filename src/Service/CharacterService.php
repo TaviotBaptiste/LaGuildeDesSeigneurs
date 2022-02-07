@@ -5,18 +5,31 @@ namespace App\Service;
 use DateTime;
 use App\Entity\Character;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\CharacterRepository;
 
 class CharacterService implements CharacterServiceInterface{
-    /**
-     * (@inheritdoc)
-     */
     private $em;
+    private $characterRepository;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(CharacterRepository $characterRepository,EntityManagerInterface $em)
     {
+        $this->characterRepository = $characterRepository;
         $this->em = $em;
         
     }
+
+    /**
+     * (@inheritdoc)
+     */
+    public function getAll(){
+        $charactersFinal = array();
+        $characters = $this->characterRepository->findAll();
+        foreach($characters as $character) {
+            $charactersFinal[] = $character->toArray();
+        }
+        return $charactersFinal;
+    }
+    
     public function create(){
         $character = new Character();
         $character
