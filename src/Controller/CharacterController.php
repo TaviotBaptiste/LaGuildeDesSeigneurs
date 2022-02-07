@@ -35,12 +35,10 @@ class CharacterController extends AbstractController
         ]);
     }
 
-    #[Route('/character/display', name: 'character_display', methods:["GET","HEAD"])]
-    public function display()
+    #[Route('/character/display/{identifier}', name: 'character_display', requirements: ['identifier' => '^([a-z0-9]{40})$'], methods: ["GET", "HEAD"])]
+    public function display(Character $character)
     {
-        $character = new Character();
-        //dump($character);
-        //dd($character->toArray());
+        $this->denyAccessUnlessGranted('characterDisplay',$character);
         return new JsonResponse($character->toArray());
     }
 }

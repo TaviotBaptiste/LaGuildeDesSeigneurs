@@ -28,7 +28,8 @@ class CharacterService implements CharacterServiceInterface{
             ->setIntelligence(120)
             ->setLife(7)
             ->setImage("/images/pikachu.jpeg")
-            ->setCreation(new \DateTime());
+            ->setCreation(new \DateTime())
+            ->setIdentifier(hash("sha1",uniqid()));
 
             $this->em->persist($character);
             $this->em->flush();

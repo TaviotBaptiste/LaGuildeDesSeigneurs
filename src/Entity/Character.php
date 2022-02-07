@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\CharacterrRepository;
+use App\Repository\CharacterRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -41,6 +41,9 @@ class Character
 
     #[ORM\Column(type: 'datetime')]
     private $creation;
+
+    #[ORM\Column(type: 'string', length: 40)]
+    private $identifier;
 
     public function getId(): ?int
     {
@@ -155,6 +158,18 @@ class Character
     public function setCreation(DateTime $creation): self
     {
         $this->creation = $creation;
+
+        return $this;
+    }
+
+    public function getIdentifier(): ?string
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier(string $identifier): self
+    {
+        $this->identifier = $identifier;
 
         return $this;
     }
