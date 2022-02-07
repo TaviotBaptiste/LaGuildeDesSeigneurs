@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class CharacterController extends AbstractController
 {
-    #[Route('/character', name: 'character')]
+    #[Route('/character', name: 'character', methods:["GET","HEAD"])]
     public function index(): Response
     {
         return $this->json([
@@ -18,11 +18,8 @@ class CharacterController extends AbstractController
             'path' => 'src/Controller/CharacterController.php',
         ]);
     }
-    /**
-    * @Route("/character/display", name="character_display") 
-    */
 
-    #[Route('/character/display', name: 'character_display')]
+    #[Route('/character/display', name: 'character_display', methods:["GET","HEAD"])]
     public function display()
     {
         $character = new Character();

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CharacterrRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CharacterRepository::class)]
@@ -33,6 +34,12 @@ class Character
 
     #[ORM\Column(type: 'string', length: 128, nullable: true)]
     private $image;
+
+    #[ORM\Column(type: 'string', length: 16)]
+    private $kind;
+
+    #[ORM\Column(type: 'datetime')]
+    private $creation;
 
     public function getId(): ?int
     {
@@ -125,5 +132,29 @@ class Character
     
     public function toArray(){
         return get_object_vars($this);
+    }
+
+    public function getKind(): ?string
+    {
+        return $this->kind;
+    }
+
+    public function setKind(string $kind): self
+    {
+        $this->kind = $kind;
+
+        return $this;
+    }
+
+    public function getCreation(): ?DateTime
+    {
+        return $this->creation;
+    }
+
+    public function setCreation(DateTime $creation): self
+    {
+        $this->creation = $creation;
+
+        return $this;
     }
 }
