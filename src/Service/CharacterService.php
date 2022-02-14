@@ -33,7 +33,7 @@ class CharacterService implements CharacterServiceInterface{
     public function create(){
         $character = new Character();
         $character
-            ->setKind("Il")
+            ->setFirstName("Il")
             ->setName("Simon Parrot")
             ->setSurname("Le premier de promo")
             ->setCaste("Humour")
