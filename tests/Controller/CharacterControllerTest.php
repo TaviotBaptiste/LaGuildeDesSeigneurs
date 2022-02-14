@@ -1,52 +1,104 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests;
 
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class CharacterControllerTest extends WebTestCase
 {
-    /**
-     * Tests redirect index
-     */
-    private $client;
-    public function setUp(): void{
+    private KernelBrowser $client;
+    private $content;
+    private static $identifier;
+
+    public function setUp(): void
+    {
         $this->client = static::createClient();
     }
 
-    public function testRedirectIndex(){
-        $client = static::createClient();
-        $client->request('GET','character');
-        $this->assertEquals(302,$client->getResponse()->getStatusCode());
-     }
-     public function testBadIdentifier(){
-         $this->client->request("GET","character/display/badIdentifier");
-         $this->assertError404($this->client->getResponse()->getStatusCode());
-     }
-     public function assertError404($statusCode){
-         $this->assertEquals(404,$statusCode);
-     }
+    public function testCreate(): void
+    {
+        $this->client->request('POST', '/character/create');
 
-     public function textInexistingIdentifier() {
-         $this->client->request("GET","/character/display/8F9RV929R87F83FZ8D87R39error");
-         $this->assertError404($this->client->getResponse()->getStatusCode());
-     }
+        $this->assertJsonResponse();
+        $this->defineIdentifier();
+        $this->assertIdentifier();
+    }
 
-     public function assertJsonResponse(){
-         $response = $this->client->getResponse();
-         $this->assertEquals(200, $response->getStatusCode());
-         $this->assertTrue($response->headers->contains('Content-Type', 'application/json'), $response->headers);
-     }
-     public function testIndex(){
-        $client = static::createClient();
-        $client->request('GET','character/index');
-        $this->assertEquals(302,$client->getResponse()->getStatusCode());
-     }
     public function testDisplay(): void
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/character/display/d144bfbba888ce346321eb3f5045cfadf7c9fb54');
+        $this->client->request('GET', '/character/display/' . self::$identifier);
 
-        $this->assertJsonResponse($client->getResponse());
+        $this->assertJsonResponse();
+        $this->assertIdentifier();
+    }
+
+    public function testRedirectIndex(): void
+    {
+        $this->client->request('GET', '/character');
+
+        $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testIndex(): void
+    {
+        $this->client->request('GET', '/character/index');
+
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testModify(): void
+    {
+        $this->client->request('PUT', '/character/modify/' . self::$identifier);
+        $this->assertJsonResponse();
+    }
+
+    /*public function testDelete(): void
+    {
+        $this->client->request('DELETE', '/character/delete/' . self::$identifier);
+        $this->assertJsonResponse();
+    }*/
+
+    public function testBadIdentifier(): void
+    {
+        $this->client->request('GET', '/character/display/basIdentifier');
+        $this->assertError404($this->client->getResponse()->getStatusCode());
+    }
+
+    public function testInexistingIdentifier(): void
+    {
+        $this->client->request('GET', '/character/display/8032d86185bdf48faf161ed2f88ec0ced2dae056error');
+        $this->assertError404($this->client->getResponse()->getStatusCode());
+    }
+
+    public function assertJsonResponse(): void
+    {
+        $response = $this->client->getResponse();
+        $this->content = json_decode($response->getContent(), true, 50);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->headers->contains('Content-Type', 'application/json'), $response->headers);
+    }
+
+    public function assertError404($statusCode): void
+    {
+        $this->assertEquals(404, $statusCode);
+    }
+
+    /**
+     * Asserts that 'identifier'
+     * is present in the Response
+     */
+    public function assertIdentifier()
+    {
+        $this->assertArrayHasKey('identifier', $this->content);
+    }
+
+    /**
+     * Defines identifier
+     */
+    public function defineIdentifier()
+    {
+        self::$identifier = $this->content['identifier'];
     }
 }

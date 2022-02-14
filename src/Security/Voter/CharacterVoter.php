@@ -3,30 +3,36 @@
 namespace App\Security\Voter;
 
 use App\Entity\Character;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use LogicException;
-use Prophecy\Argument\Token\TokenInterface as TokenTokenInterface;
-
+use Symfony\Component\Security\Core\User\UserInterface;
 class CharacterVoter extends Voter
 {
     public const CHARACTER_DISPLAY = 'characterDisplay';
     public const CHARACTER_CREATE = 'characterCreate';
     public const CHARACTER_INDEX = 'characterIndex';
+    public const CHARACTER_MODIFY = 'characterModify';
+
+
+    
 
     private const ATTRIBUTES = array(
         self::CHARACTER_DISPLAY,
         self::CHARACTER_CREATE,
         self::CHARACTER_INDEX,
+        self::CHARACTER_MODIFY,
     );
-    protected function supports ($attribute, $subject){
+    
+    protected function supports ($attribute, $subject): bool{
         if (null !== $subject) {
             return $subject instanceof Character && in_array($attribute, self::ATTRIBUTES);
         }
         return in_array($attribute, self::ATTRIBUTES);
     }
 
-    public function voteOnAttribute($attribute, $subject,TokenTokenInterface $token){
+    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
+    {
         //Defines acces rights
         switch($attribute){
             case self::CHARACTER_DISPLAY:
@@ -41,6 +47,9 @@ class CharacterVoter extends Voter
                 //Peut envoyer $token et $subject pour tester des conditions
                 return $this->canDisplay();
                 break;
+            case self::CHARACTER_MODIFY:
+                return $this->canModify();
+                break;
 
         }
         throw new LogicException('Invalid attribute: ' . $attribute);
@@ -54,4 +63,8 @@ class CharacterVoter extends Voter
     private function canCreate(){
         return true;
     }
+    private function canModify(){
+        return true;
+    }
+
 }
