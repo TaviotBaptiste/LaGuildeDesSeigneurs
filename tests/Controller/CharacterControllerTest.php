@@ -53,11 +53,11 @@ class CharacterControllerTest extends WebTestCase
         $this->assertJsonResponse();
     }
 
-    /*public function testDelete(): void
+    public function testDelete(): void
     {
-        $this->client->request('DELETE', '/character/delete/' . self::$identifier);
+        $this->client->request('DELETE', '/character/delete/527d7dad085ed466874e9ee2e6d880ba7cf7f057' . self::$identifier);
         $this->assertJsonResponse();
-    }*/
+    }
 
     public function testBadIdentifier(): void
     {
@@ -67,7 +67,7 @@ class CharacterControllerTest extends WebTestCase
 
     public function testInexistingIdentifier(): void
     {
-        $this->client->request('GET', '/character/display/8032d86185bdf48faf161ed2f88ec0ced2dae056error');
+        $this->client->request('GET', '/character/display/527d7dad085ed466874e9ee2e6d880ba7cf7f057');
         $this->assertError404($this->client->getResponse()->getStatusCode());
     }
 

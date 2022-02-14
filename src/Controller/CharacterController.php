@@ -40,12 +40,6 @@ class CharacterController extends AbstractController
     }
 
     //MODIFY
-    /**
-     * @Route("/character/modify/{identifier}",
-     *     name="character_modify",
-     *     requirements={"identifier": "^([a-z0-9]{40})$"},
-     *     methods={"PUT", "HEAD"}* )
-    */
     #[Route('/character/modify/{identifier}',name:'character_modify',requirements: ['identifier'=> '^([a-z0-9]{40})$'], methods:['PUT', 'HEAD'])]
     public function modify(Character $character){
         $this->denyAccessUnlessGranted('characterModify', $character);
@@ -53,6 +47,13 @@ class CharacterController extends AbstractController
         return new JsonResponse($character->toArray());
     }
 
+    //DELETE
+    #[Route('/character/delete/{identifier}',name:'character_delete',requirements: ['identifier'=> '^([a-z0-9]{40})$'], methods:['DELETE', 'HEAD'])]
+    public function delete(Character $character){
+        $this->denyAccessUnlessGranted('characterDelete', $character);
+        $response = $this->characterService->delete($character);
+        return new JsonResponse(array('delete' => $response));
+    }
 
     #[Route('/character', name: 'character', methods:["GET","HEAD"])]
     public function indexes(): Response
@@ -69,4 +70,6 @@ class CharacterController extends AbstractController
         $this->denyAccessUnlessGranted('characterDisplay',$character);
         return new JsonResponse($character->toArray());
     }
+
+
 }

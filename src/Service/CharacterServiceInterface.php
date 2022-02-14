@@ -10,5 +10,6 @@ interface CharacterServiceInterface{
     public function create();
     public function getAll();
     public function modify(Character $character);
+    public function delete(Character $character);
 }
 ?>
