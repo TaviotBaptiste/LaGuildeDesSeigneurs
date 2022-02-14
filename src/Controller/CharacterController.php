@@ -55,6 +55,22 @@ class CharacterController extends AbstractController
         return new JsonResponse(array('delete' => $response));
     }
 
+
+    //IMAGES
+    #[Route('/character/delete/{number}',name:'character_images',requirements: ['number'=> '^([0-9]{1,2})$'], methods:['GET', 'HEAD'])]
+    public function images(int $number){
+        $this->denyAccessUnlessGranted('characterIndex', null);
+        return new JsonResponse($this->characterService->getImages($number));
+    }
+
+    //IMAGES KIND
+    #[Route('/character/delete/{kind}',name:'character_images_kind',requirements: ['number'=> '^([0-9]{1,2})$'], methods:['GET', 'HEAD'])]
+    public function imagesKind(string $kind, int $number){
+        $this->denyAccessUnlessGranted('characterIndex', null);
+        return new JsonResponse($this->characterService->getImagesKind($kind, $number));
+    }
+
+
     #[Route('/character', name: 'character', methods:["GET","HEAD"])]
     public function indexes(): Response
     {
