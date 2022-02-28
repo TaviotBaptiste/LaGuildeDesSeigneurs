@@ -9,6 +9,7 @@ use App\Service\PlayerServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Player;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 
 class PlayerController extends AbstractController
 {
@@ -24,7 +25,8 @@ class PlayerController extends AbstractController
      public function create(Request $request){
          $this->denyAccessUnlessGranted('playerCreate', null);
          $player = $this->playerService->create($request->getContent());
-         return new JsonResponse($player->toArray());
+         //return new JsonResponse($player->toArray());
+         return JsonResponse::fromJsonString($this->playerService->serializeJson($player));
      }
  
      //INDEX Redirect
@@ -37,7 +39,8 @@ class PlayerController extends AbstractController
      public function index(){
          $this->denyAccessUnlessGranted("playerIndex", null);
          $players = $this->playerService->getAll();
-         return new JsonResponse($players);
+         //return new JsonResponse($players);
+         return JsonResponse::fromJsonString($this->playerService->serializeJson($players));
      }
  
      //MODIFY
@@ -45,7 +48,8 @@ class PlayerController extends AbstractController
      public function modify(Player $player,Request $request){
          $this->denyAccessUnlessGranted('playerModify', $player);
          $character = $this->characterService->modify($player, $request->getContent());
-         return new JsonResponse($player->toArray());
+         //return new JsonResponse($player->toArray());
+         return JsonResponse::fromJsonString($this->playerService->serializeJson($player));
      }
  
      //DELETE
@@ -56,4 +60,13 @@ class PlayerController extends AbstractController
          return new JsonResponse(array('delete' => $response));
      }
 
+    //Display
+    #[Route('/player/display/{identifier}', name: 'player_display', requirements: ['identifier' => '^([a-z0-9]{40})$'], methods: ["GET", "HEAD"])]
+    #[Entity('player', expr:'repository.findOneByIdentifier(identifier)')]
+    public function display(Player $player)
+    {
+        $this->denyAccessUnlessGranted('playerDisplay',$player);
+        //return new JsonResponse($player->toArray());
+        return JsonResponse::fromJsonString($this->playerService->serializeJson($player));
+    }
 }

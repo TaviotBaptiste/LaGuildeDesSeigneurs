@@ -31,6 +31,11 @@ interface PlayerServiceInterface{
     */
     public function submit(Player $player, $formName, $data);
 
+    /**
+    * Serialize the object(s)
+    */
+    public function serializeJson($data);
+
 
 }
 ?>
