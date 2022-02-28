@@ -16,18 +16,29 @@ class CharacterControllerTest extends WebTestCase
         $this->client = static::createClient();
     }
 
-    public function testCreate(): void
-    {
-        $this->client->request('POST', '/character/create');
-
+   /**
+    *Tests create
+    */
+    public function testCreate(){
+        $this->client->request('POST','/character/create',
+        array(),//parameters
+        array(),//files
+        array('CONTENT_TYPE' => 'application/json'),//server
+        '{"kind":"Dame",
+         "name":"Eldalótë",
+          "surname":"Fleur elfique",
+          "caste":"Elfe",
+          "knowledge":"Arts",
+          "intelligence":120,
+          "life":12,
+          "image":"/images/eldalote.jpg"}');
         $this->assertJsonResponse();
         $this->defineIdentifier();
-        $this->assertIdentifier();
-    }
+        $this->assertIdentifier();}
 
     public function testDisplay(): void
     {
-        $this->client->request('GET', '/character/display/' . self::$identifier);
+        $this->client->request('GET','/character/display/' . self::$identifier);
 
         $this->assertJsonResponse();
         $this->assertIdentifier();
@@ -49,9 +60,22 @@ class CharacterControllerTest extends WebTestCase
 
     public function testModify(): void
     {
-        $this->client->request('PUT', '/character/modify/' . self::$identifier);
+        //Tests with partial data array
+        $this->client->request('PUT','/character/modify/' . self::$identifier,
+        array(),//parameters
+        array(),//files
+        array('CONTENT_TYPE' => 'application/json'),//server
+        '{"kind":"Seigneur", "name":"Gorthol"}');
         $this->assertJsonResponse();
-    }
+        $this->assertIdentifier();
+        //Tests with whole content
+        $this->client->request('PUT','/character/modify/' . self::$identifier,
+        array(),//parameters
+        array(),//files
+        array('CONTENT_TYPE' => 'application/json'),//server
+        '{"kind":"Seigneur", "name":"Gorthol", "surname":"Heaume de terreur", "caste":"Chevalier", "knowledge":"Diplomatie", "intelligence":110, "life":13, "image":"/images/gorthol.jpg"}');
+        $this->assertJsonResponse();
+        $this->assertIdentifier();}
 
     public function testDelete(): void
     {
