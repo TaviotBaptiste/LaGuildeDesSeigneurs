@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Service;
+
 use App\Entity\Player;
 
-interface PlayerServiceInterface{
+interface PlayerServiceInterface
+{
     /**
      * Creates the player
      */
@@ -35,7 +37,4 @@ interface PlayerServiceInterface{
     * Serialize the object(s)
     */
     public function serializeJson($data);
-
-
 }
-?>

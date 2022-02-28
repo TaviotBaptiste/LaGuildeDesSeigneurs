@@ -18,20 +18,24 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
-class CharacterService implements CharacterServiceInterface{
+class CharacterService implements CharacterServiceInterface
+{
     private $em;
     private $characterRepository;
     private $formFactory;
     private $validator;
 
-    public function __construct(CharacterRepository $characterRepository,EntityManagerInterface $em,
-    FormFactoryInterface $formFactory,ValidatorInterface $validator)
+    public function __construct(
+        CharacterRepository $characterRepository,
+        EntityManagerInterface $em,
+        FormFactoryInterface $formFactory,
+        ValidatorInterface $validator
+    )
     {
         $this->characterRepository = $characterRepository;
         $this->em = $em;
         $this->formFactory = $formFactory;
         $this->validator = $validator;
-        
     }
     /**
     * {@inheritdoc}
@@ -47,7 +51,8 @@ class CharacterService implements CharacterServiceInterface{
     /**
      * (@inheritdoc)
      */
-    public function getAll(){
+    public function getAll()
+    {
         //$charactersFinal = array();
         //$characters = $this->characterRepository->findAll();
         //foreach($characters as $character) {
@@ -56,7 +61,7 @@ class CharacterService implements CharacterServiceInterface{
         //return $charactersFinal;
         return $this->playerRepository->findAll();
     }
-    
+
     public function create(string $data)
     {
         //Use with {"kind":"Dame","name":"Eldalótë","surname":"Fleur elfique","caste":"Elfe","knowledge":"Arts","intelligence":120,"life":12,"image":"/images/eldalote.jpg"}
@@ -75,8 +80,8 @@ class CharacterService implements CharacterServiceInterface{
         return $character;
     }
 
-    public function modify(Character $character,string $data){
-        
+    public function modify(Character $character, string $data)
+    {
         $this->submit($character, CharacterType::class, $data);
         $this->isEntityFilled($character);
         $character
@@ -84,7 +89,8 @@ class CharacterService implements CharacterServiceInterface{
         $this->em->flush();
         return $character;
     }
-    public function delete(Character $character){
+    public function delete(Character $character)
+    {
         $this->em->remove($character);
         $this->em->flush();
         return true;
@@ -93,7 +99,8 @@ class CharacterService implements CharacterServiceInterface{
     /**
     * {@inheritdoc}
     */
-    public function getImages(int $number, ?string $kind = null){
+    public function getImages(int $number, ?string $kind = null)
+    {
         $folder = __DIR__ . '/../../public/images/';
         $finder = new Finder();
         $finder
@@ -101,10 +108,10 @@ class CharacterService implements CharacterServiceInterface{
             ->in($folder)
             ->notPath('/cartes/')
             ->sortByName();
-            if (null !== $kind) {
-                $finder
+        if (null !== $kind) {
+            $finder
                     ->path('/' . $kind . '/');
-                }
+        }
         $images = array();
         foreach ($finder as $file) {
             $images[] = '/images/' . $file->getPathname();
@@ -112,8 +119,9 @@ class CharacterService implements CharacterServiceInterface{
         shuffle($images);
         return array_slice($images, 0, $number, true);
     }
-    
-    public function getImagesKind(string $kind, int $number){
+
+    public function getImagesKind(string $kind, int $number)
+    {
         return $this->getImages($number, $kind);
     }
 
@@ -122,21 +130,10 @@ class CharacterService implements CharacterServiceInterface{
      */
     public function isEntityFilled(Character $character)
     {
-        //if (null === $character->getKind() ||
-        //    null === $character->getName() ||
-        //    null === $character->getSurname() ||
-        //    null === $character->getIdentifier() ||
-        //    null === $character->getCreation() ||
-        //    null === $character->getModification()) 
-            throw new UnprocessableEntityHttpException('Missing data for Entity -> ' . json_encode($character->toArray()));
-            $errors = $this->validator->validate($character);
-            if (count($errors) > 0) 
-            {
-                throw new UnprocessableEntityHttpException((string) $errors . ' Missing data for Entity -> ' . json_encode($character->toArray()));
-            }
-    }
-        
-   
+        $errors = $this->validator->validate($character);
+        if (count($errors) > 0) {throw new UnprocessableEntityHttpException((string) $errors . ' Missing data for Entity -> ' . $this->serializeJson($character));}}
+
+
     /**
      * {@inheritdoc}
      */
@@ -160,4 +157,3 @@ class CharacterService implements CharacterServiceInterface{
         }
     }
 }
-?>

@@ -8,7 +8,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
 class Player
 {
@@ -26,7 +25,7 @@ class Player
     #[ORM\Column(type: 'string', length: 255)]
     private $firstname;
 
-    
+
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 0,
@@ -35,7 +34,7 @@ class Player
     #[ORM\Column(type: 'string', length: 255)]
     private $lastname;
 
-    
+
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 3,
@@ -44,7 +43,7 @@ class Player
     #[ORM\Column(type: 'string', length: 255)]
     private $email;
 
-    
+
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 3,
@@ -129,7 +128,8 @@ class Player
     }
 
     //App/Entity/Player
-    public function toArray(){
+    public function toArray()
+    {
         return get_object_vars($this);
     }
 

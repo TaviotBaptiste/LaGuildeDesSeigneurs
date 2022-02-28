@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Service;
+
 use App\Entity\Character;
 
-interface CharacterServiceInterface{
+interface CharacterServiceInterface
+{
     /**
      * Creates the character
      */
@@ -29,7 +31,4 @@ interface CharacterServiceInterface{
     * Gets images randomly
     */
     public function getImages(int $number, ?string $kind = null);
-
-
 }
-?>

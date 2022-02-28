@@ -27,18 +27,18 @@ class AppFixtures extends Fixture
                 ->setCreation(new DateTime());
             $manager->persist($character);
         }
-    for ($i = 0; $i < 10; $i++) {
-        $player = new Player();
-        $player
+        for ($i = 0; $i < 10; $i++) {
+            $player = new Player();
+            $player
             ->setFirstname("Nicolas" .$i)
             ->setLastname("Parrot")
             ->setEmail("NicoNikoNi@gmail.com")
             ->setMirian(120)
             ->setCreation(new \DateTime())
             ->setModification((new \DateTime()))
-            ->setIdentifier(hash("sha1",uniqid()));
-        $manager->persist($player);
-    }
-    $manager->flush();
+            ->setIdentifier(hash("sha1", uniqid()));
+            $manager->persist($player);
+        }
+        $manager->flush();
     }
 }

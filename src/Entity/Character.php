@@ -26,7 +26,7 @@ class Character
     #[ORM\Column(type: 'string', length: 16)]
     private $name;
 
-   
+
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 3,
@@ -36,7 +36,7 @@ class Character
     private $surname;
 
 
-    
+
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 3,
@@ -46,7 +46,7 @@ class Character
     private $caste;
 
 
-    
+
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 3,
@@ -61,7 +61,7 @@ class Character
     #[ORM\Column(type: 'integer', nullable: true)]
     private $life;
 
-    
+
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 3,
@@ -69,9 +69,9 @@ class Character
     )]
     #[ORM\Column(type: 'string', length: 128, nullable: true)]
     private $image;
-    
 
-   
+
+
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 3,
@@ -84,7 +84,7 @@ class Character
     private $creation;
 
 
-    
+
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 40,
@@ -187,7 +187,7 @@ class Character
 
         return $this;
     }
-    
+
     //public function toArray(){
     //   return get_object_vars($this);
     //}

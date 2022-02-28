@@ -7,6 +7,7 @@ use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
+
 class PlayerVoter extends Voter
 {
     public const PLAYER_DISPLAY = 'playerDisplay';
@@ -16,7 +17,7 @@ class PlayerVoter extends Voter
     public const PLAYER_DELETE = 'playerDelete';
 
 
-    
+
 
     private const ATTRIBUTES = array(
         self::PLAYER_DISPLAY,
@@ -25,8 +26,9 @@ class PlayerVoter extends Voter
         self::PLAYER_MODIFY,
         self::PLAYER_DELETE,
     );
-    
-    protected function supports ($attribute, $subject): bool{
+
+    protected function supports($attribute, $subject): bool
+    {
         if (null !== $subject) {
             return $subject instanceof Player && in_array($attribute, self::ATTRIBUTES);
         }
@@ -36,7 +38,7 @@ class PlayerVoter extends Voter
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         //Defines acces rights
-        switch($attribute){
+        switch ($attribute) {
             case self::PLAYER_DISPLAY:
                 return $this->canDisplay();
                 break;
@@ -58,17 +60,20 @@ class PlayerVoter extends Voter
     /**
      * Checks if is allow to display
      */
-    private function canDisplay(){
+    private function canDisplay()
+    {
         return true;
     }
-    private function canCreate(){
+    private function canCreate()
+    {
         return true;
     }
-    private function canModify(){
+    private function canModify()
+    {
         return true;
     }
-    private function canDelete(){
+    private function canDelete()
+    {
         return true;
     }
-
 }
