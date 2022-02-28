@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CharacterRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CharacterRepository::class)]
 #[ORM\Table(name:"characters")]
@@ -15,15 +16,40 @@ class Character
     #[ORM\Column(type: 'integer')]
     private $id;
 
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 3,
+        max: 16,
+    )]
     #[ORM\Column(type: 'string', length: 16)]
     private $name;
 
+   
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 3,
+        max: 64,
+    )]
     #[ORM\Column(type: 'string', length: 64)]
     private $surname;
 
+
+    
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 3,
+        max: 16,
+    )]
     #[ORM\Column(type: 'string', length: 16, nullable: true)]
     private $caste;
 
+
+    
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 3,
+        max: 16,
+    )]
     #[ORM\Column(type: 'string', length:16, nullable: true)]
     private $knowledge;
 
@@ -33,15 +59,35 @@ class Character
     #[ORM\Column(type: 'integer', nullable: true)]
     private $life;
 
+    
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 3,
+        max: 128,
+    )]
     #[ORM\Column(type: 'string', length: 128, nullable: true)]
     private $image;
+    
 
+   
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 3,
+        max: 16,
+    )]
     #[ORM\Column(type: 'string', length: 16)]
     private $kind;
 
     #[ORM\Column(type: 'datetime')]
     private $creation;
 
+
+    
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 40,
+        max: 40,
+    )]
     #[ORM\Column(type: 'string', length: 40)]
     private $identifier;
 

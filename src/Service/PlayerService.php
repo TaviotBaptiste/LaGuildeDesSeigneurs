@@ -11,18 +11,21 @@ use App\Form\PlayerType;
 use LogicException;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PlayerService implements PlayerServiceInterface{
     private $em;
     private $playerRepository;
     private $formFactory;
+    private $validator;
 
-    public function __construct(PlayerRepository $playerRepository,EntityManagerInterface $em,FormFactoryInterface $formFactory)
+    public function __construct(PlayerRepository $playerRepository,EntityManagerInterface $em,
+    FormFactoryInterface $formFactory, ValidatorInterface $validator)
     {
         $this->playerRepository = $playerRepository;
         $this->em = $em;
         $this->formFactory = $formFactory;
-        
+        $this->validator = $validator;
     }
 
     /**
@@ -86,14 +89,17 @@ class PlayerService implements PlayerServiceInterface{
      */
     public function isEntityFilled(Player $player)
     {
-        if (null === $player->getFirstname() ||
-            null === $player->getLastname() ||
-            null === $player->getEmail() ||
-            null === $player->getMirian() ||
-            null === $player->getIdentifier() ||
-            null === $player->getCreation() ||
-            null === $player->getModification()) {
-            throw new UnprocessableEntityHttpException('Missing data for Entity -> ' . json_encode($player->toArray()));
+        //if (null === $player->getFirstname() ||
+        //    null === $player->getLastname() ||
+        //    null === $player->getEmail() ||
+        //    null === $player->getMirian() ||
+        //    null === $player->getIdentifier() ||
+        //    null === $player->getCreation() ||
+        //    null === $player->getModification()) {
+        $errors = $this->validator->validate($player);
+        if (count($errors) > 0) 
+        {
+            throw new UnprocessableEntityHttpException((string) $errors . ' Missing data for Entity -> ' . json_encode($player->toArray()));
         }
     }
    
