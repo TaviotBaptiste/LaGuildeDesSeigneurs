@@ -134,17 +134,14 @@ class PlayerService implements PlayerServiceInterface{
     /**
     * {@inheritdoc}
     */
-    public function serializeJson($data)
-    {
+    public function serializeJson($data){
         $encoders = new JsonEncoder();
         $defaultContext = [AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($data) 
         {
             return $data->getIdentifier();
         },];
-    //$normalizers = new ObjectNormalizer();
-    $normalizers = new ObjectNormalizer(null, null, null, null, null, null, $defaultContext);
-    $serializer = new Serializer([new DateTimeNormalizer(), $normalizers], [$encoders]);
-    return $serializer->serialize($data, 'json');
-    }
+        //$normalizers = new ObjectNormalizer();
+        $normalizers = new ObjectNormalizer(null, null, null, null, null, null, $defaultContext);$serializer = new Serializer([new DateTimeNormalizer(), $normalizers], [$encoders]);
+        return $serializer->serialize($data, 'json');}
 }
 ?>

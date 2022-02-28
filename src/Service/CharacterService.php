@@ -12,6 +12,11 @@ use LogicException;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 class CharacterService implements CharacterServiceInterface{
     private $em;
@@ -27,19 +32,29 @@ class CharacterService implements CharacterServiceInterface{
         $this->formFactory = $formFactory;
         $this->validator = $validator;
         
-        
+    }
+    /**
+    * {@inheritdoc}
+    */
+    public function serializeJson($data)
+    {
+        $encoders = new JsonEncoder();
+        $normalizers = new ObjectNormalizer();
+        $serializer = new Serializer([new DateTimeNormalizer(), $normalizers], [$encoders]);
+        return $serializer->serialize($data, 'json');
     }
 
     /**
      * (@inheritdoc)
      */
     public function getAll(){
-        $charactersFinal = array();
-        $characters = $this->characterRepository->findAll();
-        foreach($characters as $character) {
-            $charactersFinal[] = $character->toArray();
-        }
-        return $charactersFinal;
+        //$charactersFinal = array();
+        //$characters = $this->characterRepository->findAll();
+        //foreach($characters as $character) {
+        //    $charactersFinal[] = $character->toArray();
+        //}
+        //return $charactersFinal;
+        return $this->playerRepository->findAll();
     }
     
     public function create(string $data)

@@ -24,7 +24,8 @@ class CharacterController extends AbstractController
     public function create(Request $request){
         $this->denyAccessUnlessGranted('characterCreate', null);
         $character = $this->characterService->create($request->getContent());
-        return new JsonResponse($character->toArray());
+       //return new JsonResponse($character->toArray());
+       return JsonResponse::fromJsonString($this->playerService->serializeJson($player));
     }
 
     //INDEX Redirect
@@ -37,7 +38,9 @@ class CharacterController extends AbstractController
     public function index(){
         $this->denyAccessUnlessGranted("characterIndex", null);
         $characters = $this->characterService->getAll();
-        return new JsonResponse($characters);
+        //return new JsonResponse($characters);
+
+        return JsonResponse::fromJsonString($this->playerService->serializeJson($characters));
     }
 
     //MODIFY
@@ -45,7 +48,8 @@ class CharacterController extends AbstractController
     public function modify(Request $request,Character $character){
         $this->denyAccessUnlessGranted('characterModify', $character);
         $character = $this->characterService->modify($character, $request->getContent());
-        return new JsonResponse($character->toArray());
+        //return new JsonResponse($character->toArray());
+        return JsonResponse::fromJsonString($this->playerService->serializeJson($player));
     }
 
     //DELETE
@@ -85,7 +89,8 @@ class CharacterController extends AbstractController
     public function display(Character $character)
     {
         $this->denyAccessUnlessGranted('characterDisplay',$character);
-        return new JsonResponse($character->toArray());
+        //return new JsonResponse($character->toArray());
+        return JsonResponse::fromJsonString($this->playerService->serializeJson($player));
     }
 
 

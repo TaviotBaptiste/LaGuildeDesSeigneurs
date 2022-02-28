@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CharacterRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -186,9 +188,9 @@ class Character
         return $this;
     }
     
-    public function toArray(){
-        return get_object_vars($this);
-    }
+    //public function toArray(){
+    //   return get_object_vars($this);
+    //}
 
     public function getKind(): ?string
     {
