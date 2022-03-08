@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Character;
+use App\Entity\Player;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\CharacterServiceInterface;
@@ -50,7 +51,7 @@ class CharacterController extends AbstractController
         $this->denyAccessUnlessGranted('characterCreate', null);
         $character = $this->characterService->create($request->getContent());
         //return new JsonResponse($character->toArray());
-        return JsonResponse::fromJsonString($this->playerService->serializeJson($player));
+        return JsonResponse::fromJsonString($this->characterService->serializeJson($character));
     }
     //INDEX
     /**
@@ -90,7 +91,7 @@ class CharacterController extends AbstractController
         $characters = $this->characterService->getAll();
         //return new JsonResponse($characters);
 
-        return JsonResponse::fromJsonString($this->playerService->serializeJson($characters));
+        return JsonResponse::fromJsonString($this->characterService->serializeJson($characters));
     }
 
     //MODIFY
@@ -216,6 +217,6 @@ class CharacterController extends AbstractController
     {
         $this->denyAccessUnlessGranted('characterDisplay', $character);
         //return new JsonResponse($character->toArray());
-        return JsonResponse::fromJsonString($this->playerService->serializeJson($player));
+        return JsonResponse::fromJsonString($this->characterService->serializeJson($character));
     }
 }

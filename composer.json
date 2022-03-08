@@ -29,6 +29,7 @@
         "symfony/asset": "6.0.*",
         "symfony/console": "6.0.*",
         "symfony/dotenv": "6.0.*",
+        "symfony/event-dispatcher": "6.0.*",
         "symfony/expression-language": "6.0.*",
         "symfony/finder": "6.0.*",
         "symfony/flex": "^2",
@@ -108,6 +109,8 @@
         "symfony/browser-kit": "6.0.*",
         "symfony/css-selector": "6.0.*",
         "symfony/maker-bundle": "^1.36",
-        "symfony/phpunit-bridge": "^6.0"
+        "symfony/phpunit-bridge": "^6.0",
+        "symfony/stopwatch": "6.0.*",
+        "symfony/web-profiler-bundle": "6.0.*"
     }
 }

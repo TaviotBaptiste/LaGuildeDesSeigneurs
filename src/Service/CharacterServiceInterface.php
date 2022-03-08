@@ -31,4 +31,8 @@ interface CharacterServiceInterface
     * Gets images randomly
     */
     public function getImages(int $number, ?string $kind = null);
+    /**
+    * Creates the character from html form
+    */
+    public function createFromHtml(Character $character);
 }

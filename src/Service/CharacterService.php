@@ -17,6 +17,8 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use App\Event\CharacterEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class CharacterService implements CharacterServiceInterface
 {
@@ -24,26 +26,31 @@ class CharacterService implements CharacterServiceInterface
     private $characterRepository;
     private $formFactory;
     private $validator;
+    private $dispatcher;
 
     public function __construct(
         CharacterRepository $characterRepository,
         EntityManagerInterface $em,
         FormFactoryInterface $formFactory,
-        ValidatorInterface $validator
-    )
-    {
+        ValidatorInterface $validator,
+        EventDispatcherInterface $dispatcher,
+    ) {
         $this->characterRepository = $characterRepository;
         $this->em = $em;
         $this->formFactory = $formFactory;
         $this->validator = $validator;
+        $this->dispatcher = $dispatcher;
     }
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function serializeJson($data)
     {
         $encoders = new JsonEncoder();
-        $normalizers = new ObjectNormalizer();
+        $defaultContext = [AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($data) {
+            return $data->getIdentifier();
+        },];
+        $normalizers = new ObjectNormalizer(null, null, null, null, null, null, $defaultContext);
         $serializer = new Serializer([new DateTimeNormalizer(), $normalizers], [$encoders]);
         return $serializer->serialize($data, 'json');
     }
@@ -59,24 +66,43 @@ class CharacterService implements CharacterServiceInterface
         //    $charactersFinal[] = $character->toArray();
         //}
         //return $charactersFinal;
-        return $this->playerRepository->findAll();
+        return $this->characterRepository->findAll();
     }
 
     public function create(string $data)
     {
         //Use with {"kind":"Dame","name":"Eldalótë","surname":"Fleur elfique","caste":"Elfe","knowledge":"Arts","intelligence":120,"life":12,"image":"/images/eldalote.jpg"}
         $character = new Character();
+        //$character
+        //   ->setIdentifier(hash('sha1', uniqid()))
+        //    ->setCreation(new DateTime())
+        //    ->setModification(new DateTime());
+        //$this->submit($character, CharacterType::class, $data);
+        //$event = new CharacterEvent($character);
+        //$this->dispatcher->dispatch($event, CharacterEvent::CHARACTER_CREATED);
+        //$this->isEntityFilled($character);
+
+        //$this->em->persist($character);
+        //$this->em->flush();
+        //return $character;
+
+        return $this->createFromHtml($character);
+    }
+
+
+    public function createFromHtml(Character $character)
+    {
         $character
             ->setIdentifier(hash('sha1', uniqid()))
             ->setCreation(new DateTime())
-            ->setModification(new DateTime())
-        ;
-        $this->submit($character, CharacterType::class, $data);
-        $this->isEntityFilled($character);
-
+            ->setModification(new DateTime());
+        //Dispatch event
+        $event = new CharacterEvent($character);
+        $this->dispatcher->dispatch($event, CharacterEvent::CHARACTER_CREATED);
+        $this
+            ->isEntityFilled($character);
         $this->em->persist($character);
         $this->em->flush();
-
         return $character;
     }
 
@@ -85,7 +111,7 @@ class CharacterService implements CharacterServiceInterface
         $this->submit($character, CharacterType::class, $data);
         $this->isEntityFilled($character);
         $character
-        ->setModification(new DateTime());
+            ->setModification(new DateTime());
         $this->em->flush();
         return $character;
     }
@@ -97,8 +123,8 @@ class CharacterService implements CharacterServiceInterface
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getImages(int $number, ?string $kind = null)
     {
         $folder = __DIR__ . '/../../public/images/';
@@ -110,7 +136,7 @@ class CharacterService implements CharacterServiceInterface
             ->sortByName();
         if (null !== $kind) {
             $finder
-                    ->path('/' . $kind . '/');
+                ->path('/' . $kind . '/');
         }
         $images = array();
         foreach ($finder as $file) {
@@ -131,7 +157,10 @@ class CharacterService implements CharacterServiceInterface
     public function isEntityFilled(Character $character)
     {
         $errors = $this->validator->validate($character);
-        if (count($errors) > 0) {throw new UnprocessableEntityHttpException((string) $errors . ' Missing data for Entity -> ' . $this->serializeJson($character));}}
+        if (count($errors) > 0) {
+            throw new UnprocessableEntityHttpException((string) $errors . ' Missing data for Entity -> ' . $this->serializeJson($character));
+        }
+    }
 
 
     /**
@@ -148,7 +177,7 @@ class CharacterService implements CharacterServiceInterface
 
         //Submits form
         $form = $this->formFactory->create($formName, $character, ['csrf_protection' => false]);
-        $form->submit($dataArray, false);//With false, only submitted fields are validated
+        $form->submit($dataArray, false); //With false, only submitted fields are validated
 
         //Gets errors
         $errors = $form->getErrors();
