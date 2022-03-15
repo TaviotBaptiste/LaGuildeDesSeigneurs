@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Service\CharacterServiceInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 
 class CharacterController extends AbstractController
 {
@@ -90,6 +91,32 @@ class CharacterController extends AbstractController
         $this->denyAccessUnlessGranted("characterIndex", null);
         $characters = $this->characterService->getAll();
         //return new JsonResponse($characters);
+
+        return JsonResponse::fromJsonString($this->characterService->serializeJson($characters));
+    }
+    
+    //INDEXNUMBER
+    /**
+    * Displays available Characters
+    * @OA\Response(
+    *     response=200,
+    *     description="Success",
+    *     @OA\Schema(
+    *         type="array",
+    *         @OA\Items(ref=@Model(type=Character::class))
+    *     )
+    * )
+    * @OA\Response(
+    *     response=403,
+    *     description="Access denied",
+    * )
+    * @OA\Tag(name="Character")
+    */
+    #[Route('/character/index/{number}', name: 'character_index_number', methods:["GET","HEAD"])]
+    #[Entity('charactere', expr:'repository.findByNumber(number)')]
+    public function indexNumber(Request $request, string $number)
+    {
+        $this->denyAccessUnlessGranted("characterIndexNumber", null);
 
         return JsonResponse::fromJsonString($this->characterService->serializeJson($characters));
     }
@@ -218,5 +245,40 @@ class CharacterController extends AbstractController
         $this->denyAccessUnlessGranted('characterDisplay', $character);
         //return new JsonResponse($character->toArray());
         return JsonResponse::fromJsonString($this->characterService->serializeJson($character));
+    }
+
+    //DISPLAY
+    /**
+     * Displays the Character by number
+     *
+     * ...
+     *
+     * @OA\Parameter(
+     *     name="level",
+     *     in="path",
+     *     description="level of number of the Character",
+     *     required=true,
+     * )
+     * @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @Model(type=Character::class)
+     * )
+     * @OA\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @OA\Tag(name="Character")
+     */
+    #[Route('/character/intelligence/{number}', name: 'character_index_number', methods: ['GET', 'HEAD'])]
+    public function gtEqNumber(Int $number): Response
+    {
+        $this->denyAccessUnlessGranted('characterIndex', null);
+        $characters = $this->characterService->getAllByNumber($number);
+        return JsonResponse::fromJsonString($this->characterService->serializeJson($characters));
     }
 }

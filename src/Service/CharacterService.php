@@ -76,6 +76,11 @@ class CharacterService implements CharacterServiceInterface
         return  $this->characterRepository->findAll();
     }
 
+
+    public function getAllByNumber($number){
+        return $this->characterRepository->findByNumber($number);
+    }
+
     public function modify(Character $character, string $data)
     {
         $this->submit($character, CharacterType::class, $data);

@@ -32,6 +32,18 @@ class CharacterRepository extends ServiceEntityRepository
         ->getOneOrNullResult();
     }
 
+    public function findByNumber($number)
+    {
+        return $this
+        ->createQueryBuilder('character')
+        ->select('character')
+        ->where('character.intelligence >= :number')
+        ->setParameter('number', $number)
+        ->getQuery()
+        ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+    }
+    
+
     // /**
     //  * @return Character[] Returns an array of Character objects
     //  */

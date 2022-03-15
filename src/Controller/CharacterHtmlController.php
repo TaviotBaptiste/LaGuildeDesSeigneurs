@@ -28,7 +28,7 @@ class CharacterHtmlController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'haracter_html_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'character_html_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $character = new Character();
@@ -81,5 +81,14 @@ class CharacterHtmlController extends AbstractController
         }
 
         return $this->redirectToRoute('app_character_html_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+
+    #[Route('/intelligence/{number}', name: 'character_html_intelligence', methods: ['GET'])]
+    public function number(Int $number): Response
+    {
+        return $this->render('character_html/index.html.twig', [
+            'characters' => $this->characterService->getAllByNumber($number),
+        ]);
     }
 }
