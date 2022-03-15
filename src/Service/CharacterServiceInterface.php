@@ -34,6 +34,10 @@ interface CharacterServiceInterface
      */
     public function modifyFromHtml(Character $character);
 
+
+    /**
+     * GetAllByNumber help for hetting all data
+     */
     public function getAllByNumber(string $number);
 
 }

@@ -32,6 +32,13 @@ class CharacterRepository extends ServiceEntityRepository
         ->getOneOrNullResult();
     }
 
+
+
+    /**
+     * Returns an array of Character objects with sort on intelligence
+     */
+
+
     public function findByNumber($number)
     {
         return $this
