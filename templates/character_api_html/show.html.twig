@@ -5,6 +5,8 @@
 {% block body %}
     <h1>Character</h1>
 
+% set gender = 'masculine' %}{% if character.kind == 'Dame' or character.kind == 'Ennemie' %}{% set gender = 'feminine' %}{% endif %}{{ character.name }} est {{ feminisation(gender, 'un') }} Archer,
+   {{ feminisation(gender, 'Il') }} a une force de {{ character|force }} points.
     <table class="table">
         <tbody>
             <tr>
