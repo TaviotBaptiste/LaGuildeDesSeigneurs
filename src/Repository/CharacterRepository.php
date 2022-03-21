@@ -19,37 +19,77 @@ class CharacterRepository extends ServiceEntityRepository
         parent::__construct($registry, Character::class);
     }
 
-
+    /**
+     * Get one by identifier
+     */
     public function findOneByIdentifier($identifier)
     {
-        return $this
-        ->createQueryBuilder('c')
-        ->select('c', 'p')
-        ->leftJoin('c.players', 'p')
-        ->where('c.identifier = :identifier')
-        ->setParameter('identifier', $identifier)
-        ->getQuery()
-        ->getOneOrNullResult();
+        return $this->createQueryBuilder('c')
+            ->select('c', 'p')
+            ->leftJoin('c.player', 'p')
+            ->where('c.identifier = :identifier')
+            ->setParameter('identifier', $identifier)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
-
 
 
     /**
-     * Returns an array of Character objects with sort on intelligence
+     * Get all Character and players by intelligence in Character
      */
-
-
-    public function findByNumber($number)
+    public function findAllByIntelligence($intelligence)
     {
-        return $this
-        ->createQueryBuilder('character')
-        ->select('character')
-        ->where('character.intelligence >= :number')
-        ->setParameter('number', $number)
-        ->getQuery()
-        ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        return $this->createQueryBuilder('c')
+            ->select('c','p')
+            ->leftJoin('c.player', 'p')
+            ->where('c.intelligence >= :intelligence')
+            ->setParameter('intelligence', $intelligence)
+            ->getQuery()
+            ->getResult();
     }
-    
+
+
+    /**
+     * Get all Character and players by life in Character
+     */
+    public function findAllByLife($life)
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c','p')
+            ->leftJoin('c.player', 'p')
+            ->where('c.life >= :life')
+            ->setParameter('life', $life)
+            ->getQuery()
+            ->getResult();
+    }
+
+        /**
+     * Get all Character and players by caste in Character
+     */
+    public function findAllByCaste($caste)
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c','p')
+            ->leftJoin('c.player', 'p')
+            ->where('c.caste = :caste')
+            ->setParameter('caste', $caste)
+            ->getQuery()
+            ->getResult();
+    }
+
+            /**
+     * Get all Character and players by Knowledge in Character
+     */
+    public function findAllByKnowledge($knowledge)
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c','p')
+            ->leftJoin('c.player', 'p')
+            ->where('c.knowledge = :knowledge')
+            ->setParameter('knowledge', $knowledge)
+            ->getQuery()
+            ->getResult();
+    }
 
     // /**
     //  * @return Character[] Returns an array of Character objects

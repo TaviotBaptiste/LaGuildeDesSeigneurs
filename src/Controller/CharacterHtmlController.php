@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Character;
 use App\Form\CharacterHtmlType;
-use App\Repository\CharacterRepository;
+use App\Service\CharacterService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,12 +15,14 @@ use App\Service\CharacterServiceInterface;
 #[Route('/character/html')]
 class CharacterHtmlController extends AbstractController
 {
-    private $characterService;
-    public function __construct(CharacterServiceInterface $characterService)
+
+
+    public function __construct(private CharacterServiceInterface $characterService)
     {
-        $this->characterService = $characterService;
     }
-    #[Route('/', name: 'character_html_index', methods: ['GET'])]
+
+
+    #[Route('/', name: 'app_character_html_index', methods: ['GET'])]
     public function index(): Response
     {
         return $this->render('character_html/index.html.twig', [
@@ -28,7 +30,39 @@ class CharacterHtmlController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'character_html_new', methods: ['GET', 'POST'])]
+    #[Route('/intelligence/{intelligence}', name: 'app_character_html_intelligence',requirements: ["intelligence" => "^([0-9]{1,3})$"], methods: ['GET'])]
+    public function indexIntelligence(int $intelligence)
+    {
+        return $this->render('character_html/index.html.twig', [
+            'characters' => $this->characterService->getByIntelligence($intelligence),
+        ]);
+    }
+
+    #[Route('/life/{life}', name: 'app_character_html_life',requirements: ["life" => "^([0-9]{1,3})$"], methods: ['GET'])]
+    public function indexLife(int $life)
+    {
+        return $this->render('character_html/index.html.twig', [
+            'characters' => $this->characterService->getByLife($life),
+        ]);
+    }
+
+    #[Route('/caste/{caste}', name: 'app_character_html_caste',requirements: ["caste" => "[^/]+"], methods: ['GET'])]
+    public function indexCaste(string $caste)
+    {
+        return $this->render('character_html/index.html.twig', [
+            'characters' => $this->characterService->getByCaste($caste),
+        ]);
+    }
+
+    #[Route('/knowledge/{knowledge}', name: 'app_character_html_knowledge',requirements: ["knowledge" => "[^/]+"], methods: ['GET'])]
+    public function indexKnowledge(string $knowledge)
+    {
+        return $this->render('character_html/index.html.twig', [
+            'characters' => $this->characterService->getByCaste($knowledge),
+        ]);
+    }
+    
+    #[Route('/new', name: 'app_character_html_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $character = new Character();
@@ -37,7 +71,7 @@ class CharacterHtmlController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->characterService->createFromHtml($character);
-            return $this->redirectToRoute('character_html_show', array('id' => $character->getId(),));
+            return $this->redirectToRoute('app_character_html_show', array('id' => $character->getId(),));
         }
 
         return $this->renderForm('character_html/new.html.twig', [
@@ -61,9 +95,8 @@ class CharacterHtmlController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_character_html_index', [], Response::HTTP_SEE_OTHER);
+            $this->characterService->modifyFromHtml($character);
+            return $this->redirectToRoute('app_character_html_index', array('id' => $character->getId(),));
         }
 
         return $this->renderForm('character_html/edit.html.twig', [
@@ -81,14 +114,5 @@ class CharacterHtmlController extends AbstractController
         }
 
         return $this->redirectToRoute('app_character_html_index', [], Response::HTTP_SEE_OTHER);
-    }
-
-
-    #[Route('/intelligence/{number}', name: 'character_html_intelligence', methods: ['GET'])]
-    public function number(Int $number): Response
-    {
-        return $this->render('character_html/index.html.twig', [
-            'characters' => $this->characterService->getAllByNumber($number),
-        ]);
     }
 }
